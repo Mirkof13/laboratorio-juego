@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import confetti from 'canvas-confetti';
 import { sound } from '../utils/audio';
 
 export default function Marcador({
@@ -20,35 +19,6 @@ export default function Marcador({
       setSeconds((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, [isWon]);
-
-  useEffect(() => {
-    if (isWon) {
-      const duration = 2.5 * 1000;
-      const animationEnd = Date.now() + duration;
-
-      const frame = () => {
-        confetti({
-          particleCount: 4,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-          colors: ['#00f0ff', '#ffd700', '#ff0055', '#7b2cbf'],
-        });
-        confetti({
-          particleCount: 4,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: ['#00f0ff', '#ffd700', '#ff0055', '#7b2cbf'],
-        });
-
-        if (Date.now() < animationEnd) {
-          requestAnimationFrame(frame);
-        }
-      };
-      frame();
-    }
   }, [isWon]);
 
   const handleToggleSound = () => {
