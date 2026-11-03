@@ -134,30 +134,32 @@ export default function Marcador({
       )}
 
       {isWon && (
-        <div className="victory-modal-backdrop">
-          <div className="victory-dialog">
-            <div className="victory-status-badge">REINO DE LOS MUERTOS CONQUISTADO</div>
-            <h1 className="victory-main-title">MISION COMPLETADA</h1>
-            <p className="victory-main-desc">
-              Has navegado el laberinto, resuelto el puzzle de la cuesta y alcanzado el Trono en el Punto B.
+        <div className="victory-screen">
+          <div className="victory-content">
+            <div className="victory-subtitle">OBJETIVO CUMPLIDO</div>
+            <h1 className="victory-title">VICTORIA</h1>
+            <p className="victory-text">
+              Has superado el laberinto, resuelto el puzzle y alcanzado el Castillo del Trono.
             </p>
 
-            <div className="victory-summary-grid">
-              <div className="summary-item">
-                <span className="sum-label">Muertes Registradas</span>
-                <span className="sum-val">{deaths}</span>
+            <div className="victory-stats">
+              <div className="v-stat">
+                <span className="v-label">MUERTES</span>
+                <span className="v-value">{deaths}</span>
               </div>
-              <div className="summary-item">
-                <span className="sum-label">Tiempo Total</span>
-                <span className="sum-val">{formatTime(seconds)}</span>
+              <div className="v-divider" />
+              <div className="v-stat">
+                <span className="v-label">TIEMPO</span>
+                <span className="v-value">{formatTime(seconds)}</span>
               </div>
-              <div className="summary-item">
-                <span className="sum-label">Destino Alcanzado</span>
-                <span className="sum-val">Castillo (Punto B)</span>
+              <div className="v-divider" />
+              <div className="v-stat">
+                <span className="v-label">META</span>
+                <span className="v-value">PUNTO B</span>
               </div>
             </div>
 
-            <button className="restart-action-btn" onClick={handleRestartClick}>
+            <button className="victory-btn" onClick={handleRestartClick}>
               REINICIAR PARTIDA
             </button>
           </div>
