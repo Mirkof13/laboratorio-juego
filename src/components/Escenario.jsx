@@ -30,11 +30,11 @@ export default function Escenario({
     }
 
     if (gateRef.current) {
-      const targetGateY = hasRelic ? 5.5 : 1.4;
+      const targetGateY = hasRelic ? -1.2 : 0.9;
       gateRef.current.position.y = THREE.MathUtils.lerp(
         gateRef.current.position.y,
         targetGateY,
-        0.06
+        0.08
       );
     }
 
@@ -65,10 +65,10 @@ export default function Escenario({
 
   return (
     <group>
-      <ambientLight intensity={0.7} color="#9cb5d9" />
+      <ambientLight intensity={0.75} color="#9cb5d9" />
       <directionalLight
         position={[30, 45, 25]}
-        intensity={1.2}
+        intensity={1.1}
         color="#d8e8ff"
         castShadow
         shadow-mapSize-width={1024}
@@ -79,6 +79,11 @@ export default function Escenario({
         shadow-camera-right={30}
         shadow-camera-top={50}
         shadow-camera-bottom={-50}
+      />
+      <directionalLight
+        position={[-25, 35, -20]}
+        intensity={0.6}
+        color="#88aacc"
       />
       <fog attach="fog" args={['#080b16', 50, 140]} />
 
@@ -151,16 +156,16 @@ export default function Escenario({
           <boxGeometry args={[7.0, 0.8, 18.0]} />
           <meshStandardMaterial color="#242c38" roughness={0.85} />
         </mesh>
-        <mesh position={[-3.6, 0.7, 29]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.4, 18.0]} />
+        <mesh position={[-3.6, 0.6, 29]} castShadow receiveShadow>
+          <boxGeometry args={[0.6, 1.2, 18.0]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
-        <mesh position={[3.6, 0.7, 30]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.4, 16.0]} />
+        <mesh position={[3.6, 0.6, 30]} castShadow receiveShadow>
+          <boxGeometry args={[0.6, 1.2, 16.0]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
 
-        <group position={[-3.6, 1.5, 29]}>
+        <group position={[-3.6, 1.4, 29]}>
           <mesh>
             <sphereGeometry args={[0.15, 12, 12]} />
             <meshBasicMaterial color="#00e5ff" />
@@ -174,20 +179,20 @@ export default function Escenario({
           <boxGeometry args={[22.0, 0.8, 7.0]} />
           <meshStandardMaterial color="#262f3d" roughness={0.85} />
         </mesh>
-        <mesh position={[10.5, 0.7, 21.2]} castShadow receiveShadow>
-          <boxGeometry args={[16.0, 1.4, 0.6]} />
+        <mesh position={[10.5, 0.6, 21.2]} castShadow receiveShadow>
+          <boxGeometry args={[16.0, 1.2, 0.6]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
-        <mesh position={[4.0, 0.7, 13.8]} castShadow receiveShadow>
-          <boxGeometry args={[14.5, 1.4, 0.6]} />
+        <mesh position={[4.0, 0.6, 13.8]} castShadow receiveShadow>
+          <boxGeometry args={[14.5, 1.2, 0.6]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
-        <mesh position={[18.6, 0.7, 17.5]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.4, 7.0]} />
+        <mesh position={[18.6, 0.6, 17.5]} castShadow receiveShadow>
+          <boxGeometry args={[0.6, 1.2, 7.0]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
 
-        <group position={[18.2, 1.5, 17.5]}>
+        <group position={[18.2, 1.4, 17.5]}>
           <mesh>
             <sphereGeometry args={[0.18, 12, 12]} />
             <meshBasicMaterial color="#bc13fe" />
@@ -201,16 +206,16 @@ export default function Escenario({
           <boxGeometry args={[7.0, 0.8, 17.0]} />
           <meshStandardMaterial color="#242c38" roughness={0.85} />
         </mesh>
-        <mesh position={[18.6, 0.7, 6.0]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.4, 17.0]} />
+        <mesh position={[18.6, 0.6, 6.0]} castShadow receiveShadow>
+          <boxGeometry args={[0.6, 1.2, 17.0]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
-        <mesh position={[11.8, 0.7, 8.5]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.4, 11.5]} />
+        <mesh position={[11.8, 0.6, 8.5]} castShadow receiveShadow>
+          <boxGeometry args={[0.6, 1.2, 11.5]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
 
-        <group position={[18.2, 1.5, 6.0]}>
+        <group position={[18.2, 1.4, 6.0]}>
           <mesh>
             <sphereGeometry args={[0.16, 12, 12]} />
             <meshBasicMaterial color="#00e5ff" />
@@ -224,12 +229,12 @@ export default function Escenario({
           <boxGeometry args={[27.0, 0.8, 7.0]} />
           <meshStandardMaterial color="#283242" roughness={0.85} />
         </mesh>
-        <mesh position={[8.5, 0.7, -4.0]} castShadow receiveShadow>
-          <boxGeometry args={[20.0, 1.4, 0.6]} />
+        <mesh position={[8.5, 0.6, -4.0]} castShadow receiveShadow>
+          <boxGeometry args={[20.0, 1.2, 0.6]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
-        <mesh position={[6.0, 0.7, 2.8]} castShadow receiveShadow>
-          <boxGeometry args={[12.0, 1.4, 0.6]} />
+        <mesh position={[6.0, 0.6, 2.8]} castShadow receiveShadow>
+          <boxGeometry args={[12.0, 1.2, 0.6]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
       </group>
@@ -299,12 +304,16 @@ export default function Escenario({
             </Text>
           </group>
         ) : (
-          <group position={[-14.5, 3.7, -0.5]}>
-            <mesh>
-              <sphereGeometry args={[0.3, 16, 16]} />
-              <meshBasicMaterial color="#00ff88" />
+          <group position={[-14.5, 3.5, -0.5]}>
+            <mesh position={[0, 0.4, 0]}>
+              <cylinderGeometry args={[0.15, 0.35, 1.2, 16]} />
+              <meshBasicMaterial color="#00ff88" transparent opacity={0.6} />
             </mesh>
-            <pointLight color="#00ff88" intensity={2.0} distance={5} />
+            <mesh position={[0, 1.1, 0]}>
+              <sphereGeometry args={[0.28, 16, 16]} />
+              <meshBasicMaterial color="#00f6ff" />
+            </mesh>
+            <pointLight color="#00ff88" intensity={3.0} distance={8} />
           </group>
         )}
       </group>
@@ -314,16 +323,16 @@ export default function Escenario({
           <boxGeometry args={[7.2, 0.8, 34.0]} />
           <meshStandardMaterial color="#242c38" roughness={0.85} />
         </mesh>
-        <mesh position={[-7.6, 0.7, -19.5]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.4, 34.0]} />
+        <mesh position={[-7.4, 0.6, -19.5]} castShadow receiveShadow>
+          <boxGeometry args={[0.5, 1.2, 34.0]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
-        <mesh position={[0.0, 0.7, -20.5]} castShadow receiveShadow>
-          <boxGeometry args={[0.6, 1.4, 32.0]} />
+        <mesh position={[-0.2, 0.6, -20.5]} castShadow receiveShadow>
+          <boxGeometry args={[0.5, 1.2, 32.0]} />
           <meshStandardMaterial color="#3d4758" roughness={0.8} />
         </mesh>
 
-        <group position={[-7.2, 1.5, -19.5]}>
+        <group position={[-7.0, 1.4, -19.5]}>
           <mesh>
             <sphereGeometry args={[0.16, 12, 12]} />
             <meshBasicMaterial color="#00e5ff" />
@@ -333,44 +342,41 @@ export default function Escenario({
       </group>
 
       <group position={[-3.8, 0, MAP_CONFIG.gateZ]}>
-        <mesh position={[-3.4, 2.2, 0]} castShadow receiveShadow>
-          <boxGeometry args={[1.2, 4.4, 1.4]} />
-          <meshStandardMaterial color="#2b3340" roughness={0.8} />
+        <mesh position={[-3.0, 0.9, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.3, 0.42, 1.8, 16]} />
+          <meshStandardMaterial color="#2d3748" roughness={0.7} metalness={0.5} />
         </mesh>
-        <mesh position={[3.4, 2.2, 0]} castShadow receiveShadow>
-          <boxGeometry args={[1.2, 4.4, 1.4]} />
-          <meshStandardMaterial color="#2b3340" roughness={0.8} />
-        </mesh>
-        <mesh position={[0, 4.5, 0]} castShadow receiveShadow>
-          <boxGeometry args={[8.0, 0.8, 1.6]} />
-          <meshStandardMaterial color="#323b4a" roughness={0.7} />
+        <mesh position={[-3.0, 1.95, 0]}>
+          <octahedronGeometry args={[0.22, 0]} />
+          <meshBasicMaterial color={hasRelic ? '#00ff88' : '#ff0055'} />
         </mesh>
 
-        <group ref={gateRef} position={[0, 1.4, 0]}>
+        <mesh position={[3.0, 0.9, 0]} castShadow receiveShadow>
+          <cylinderGeometry args={[0.3, 0.42, 1.8, 16]} />
+          <meshStandardMaterial color="#2d3748" roughness={0.7} metalness={0.5} />
+        </mesh>
+        <mesh position={[3.0, 1.95, 0]}>
+          <octahedronGeometry args={[0.22, 0]} />
+          <meshBasicMaterial color={hasRelic ? '#00ff88' : '#ff0055'} />
+        </mesh>
+
+        <group ref={gateRef} position={[0, 0.9, 0]}>
           <mesh castShadow>
-            <boxGeometry args={[5.6, 2.8, 0.3]} />
+            <boxGeometry args={[5.4, 1.8, 0.2]} />
             <meshStandardMaterial
-              color="#171b24"
-              metalness={0.9}
-              roughness={0.2}
+              color={hasRelic ? '#00ff88' : '#ff0044'}
+              emissive={hasRelic ? '#00cc66' : '#cc0033'}
+              emissiveIntensity={hasRelic ? 0.8 : 2.0}
+              transparent
+              opacity={hasRelic ? 0.2 : 0.65}
               wireframe={!hasRelic}
             />
           </mesh>
         </group>
 
-        <mesh position={[0, 1.4, 0]}>
-          <planeGeometry args={[5.6, 2.8]} />
-          <meshBasicMaterial
-            color={hasRelic ? '#00ff88' : '#ff0033'}
-            transparent
-            opacity={hasRelic ? 0.15 : 0.65}
-            side={THREE.DoubleSide}
-          />
-        </mesh>
-
         <Text
-          position={[0, 5.3, 0]}
-          fontSize={0.6}
+          position={[0, 2.4, 0]}
+          fontSize={0.55}
           color={hasRelic ? '#00ff88' : '#ff3344'}
           anchorX="center"
           outlineWidth={0.05}
@@ -386,51 +392,56 @@ export default function Escenario({
           <meshStandardMaterial color="#222a36" roughness={0.8} metalness={0.25} />
         </mesh>
 
-        <mesh position={[-7.5, 0.9, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.8, 1.8, 16.0]} />
+        <mesh position={[-7.4, 0.6, 0]} castShadow receiveShadow>
+          <boxGeometry args={[0.6, 1.2, 16.0]} />
           <meshStandardMaterial color="#323c4d" roughness={0.85} />
         </mesh>
-        <mesh position={[7.5, 0.9, 0]} castShadow receiveShadow>
-          <boxGeometry args={[0.8, 1.8, 16.0]} />
+        <mesh position={[7.4, 0.6, 0]} castShadow receiveShadow>
+          <boxGeometry args={[0.6, 1.2, 16.0]} />
           <meshStandardMaterial color="#323c4d" roughness={0.85} />
         </mesh>
-        <mesh position={[0, 1.2, -8.0]} castShadow receiveShadow>
-          <boxGeometry args={[15.8, 2.4, 0.8]} />
+        <mesh position={[0, 0.6, -8.0]} castShadow receiveShadow>
+          <boxGeometry args={[15.4, 1.2, 0.6]} />
           <meshStandardMaterial color="#323c4d" roughness={0.85} />
         </mesh>
 
-        {[-6.8, 6.8].map((x, idx) => (
-          <group key={idx} position={[x, 2.5, -7.2]}>
+        {[-6.5, 6.5].map((x, idx) => (
+          <group key={idx} position={[x, 1.2, -7.0]}>
             <mesh castShadow receiveShadow>
-              <cylinderGeometry args={[0.8, 1.0, 5.0, 16]} />
+              <cylinderGeometry args={[0.45, 0.6, 2.4, 16]} />
               <meshStandardMaterial color="#2d3748" roughness={0.8} />
             </mesh>
+            <mesh position={[0, 1.3, 0]}>
+              <sphereGeometry args={[0.2, 16, 16]} />
+              <meshBasicMaterial color="#ffd700" />
+            </mesh>
+            <pointLight position={[0, 1.3, 0]} color="#ffd700" intensity={2.0} distance={6} />
           </group>
         ))}
 
-        <mesh position={[0, 1.5, -6.0]} castShadow receiveShadow>
-          <boxGeometry args={[3.0, 3.0, 1.6]} />
-          <meshStandardMaterial color="#3a2542" roughness={0.6} />
+        <mesh position={[0, 0.6, -5.5]} castShadow receiveShadow>
+          <boxGeometry args={[3.2, 1.2, 1.8]} />
+          <meshStandardMaterial color="#2b1f33" roughness={0.6} />
         </mesh>
 
         <group position={[0, 2.2, -4.0]}>
           <mesh ref={portalRef}>
-            <torusGeometry args={[2.2, 0.28, 24, 48]} />
+            <torusGeometry args={[2.0, 0.24, 24, 48]} />
             <meshStandardMaterial
               color="#ffd700"
               emissive="#ffaa00"
-              emissiveIntensity={2.8}
+              emissiveIntensity={3.0}
             />
           </mesh>
           <pointLight color="#ffaa00" intensity={4.5} distance={12} decay={2} />
         </group>
 
         <Text
-          position={[0, 5.4, -4.0]}
-          fontSize={0.85}
+          position={[0, 4.8, -4.0]}
+          fontSize={0.8}
           color="#ffd700"
           anchorX="center"
-          outlineWidth={0.07}
+          outlineWidth={0.06}
           outlineColor="#332200"
         >
           PUNTO B: CASTILLO DEL TRONO

@@ -1,14 +1,14 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { sound } from '../utils/audio';
 import { checkWalkable } from '../utils/mapData';
+import { sound } from '../utils/audio';
 
 export default function Jugador({
-  startPos = [0, 1.0, 34.0],
+  startPos = [0, 1, 34],
   obstacles = [],
   relicPos = [-14.5, 3.6, -0.5],
-  goalPos = [0, 1.0, -47.0],
+  goalPos = [0, 1, -47],
   hasRelic = false,
   isWon = false,
   resetKey = 0,
@@ -22,12 +22,13 @@ export default function Jugador({
   const scytheLeftRef = useRef();
   const scytheRightRef = useRef();
   const soulAuraRef = useRef();
+  const relicHaloRef = useRef();
   const cloakRef = useRef();
 
   const pos = useRef(new THREE.Vector3(...startPos));
-  const [keys, setKeys] = useState({});
-  const stepTimer = useRef(0);
+  const keys = useRef({});
   const deathCooldown = useRef(0);
+  const stepTimer = useRef(0);
   const victoryTriggered = useRef(false);
 
   useEffect(() => {
@@ -35,18 +36,18 @@ export default function Jugador({
     deathCooldown.current = 0;
     victoryTriggered.current = false;
     if (groupRef.current) {
-      groupRef.current.position.copy(pos.current);
-      groupRef.current.rotation.y = Math.PI;
+      groupRef.current.position.set(...startPos);
+      groupRef.current.rotation.set(0, 0, 0);
     }
   }, [resetKey, startPos]);
 
-  const checkRelicPickup = useCallback(() => {
+  const attemptPickupRelic = useCallback(() => {
     if (hasRelic) return;
-    const playerV = pos.current;
+    const playerV = new THREE.Vector3(pos.current.x, pos.current.y, pos.current.z);
     const relicV = new THREE.Vector3(...relicPos);
     const dist = playerV.distanceTo(relicV);
 
-    if (dist < 3.2) {
+    if (dist < 4.2) {
       sound.playPickup();
       sound.playGate();
       if (onCollectRelic) onCollectRelic();
@@ -56,59 +57,71 @@ export default function Jugador({
   useEffect(() => {
     const handleKeyDown = (e) => {
       const code = e.code;
-      setKeys((prev) => ({ ...prev, [code]: true }));
+      keys.current[code] = true;
 
-      if (code === 'KeyE' || code === 'Space') {
-        checkRelicPickup();
+      if (code === 'KeyE') {
+        attemptPickupRelic();
       }
     };
 
     const handleKeyUp = (e) => {
-      const code = e.code;
-      setKeys((prev) => ({ ...prev, [code]: false }));
+      keys.current[e.code] = false;
     };
 
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
     };
-  }, [checkRelicPickup]);
+  }, [attemptPickupRelic]);
 
   const respawnAtA = () => {
     pos.current.set(...startPos);
     if (groupRef.current) {
-      groupRef.current.position.copy(pos.current);
-      groupRef.current.rotation.y = Math.PI;
+      groupRef.current.position.set(...startPos);
+      groupRef.current.rotation.set(0, 0, 0);
     }
   };
 
   useFrame((state, delta) => {
     if (!groupRef.current) return;
 
-    if (isWon) {
-      const victoryCam = new THREE.Vector3(
-        pos.current.x,
-        pos.current.y + 6.0,
-        pos.current.z + 8.0
-      );
-      state.camera.position.lerp(victoryCam, 0.05);
-      state.camera.lookAt(pos.current.x, pos.current.y + 1.2, pos.current.z - 2.0);
-      return;
-    }
-
     if (deathCooldown.current > 0) {
       deathCooldown.current -= delta;
+    }
+
+    if (isWon) {
+      const victoryCameraTarget = new THREE.Vector3(
+        goalPos[0],
+        goalPos[1] + 9.5,
+        goalPos[2] + 12.0
+      );
+      state.camera.position.lerp(victoryCameraTarget, 0.04);
+      state.camera.lookAt(goalPos[0], goalPos[1] + 1.8, goalPos[2]);
+      return;
     }
 
     let moveX = 0;
     let moveZ = 0;
 
-    const isUp = keys['KeyW'] || keys['ArrowUp'] || touchDirection.up;
-    const isDown = keys['KeyS'] || keys['ArrowDown'] || touchDirection.down;
-    const isLeft = keys['KeyA'] || keys['ArrowLeft'] || touchDirection.left;
-    const isRight = keys['KeyD'] || keys['ArrowRight'] || touchDirection.right;
+    const isUp =
+      keys.current['KeyW'] ||
+      keys.current['ArrowUp'] ||
+      touchDirection.up;
+    const isDown =
+      keys.current['KeyS'] ||
+      keys.current['ArrowDown'] ||
+      touchDirection.down;
+    const isLeft =
+      keys.current['KeyA'] ||
+      keys.current['ArrowLeft'] ||
+      touchDirection.left;
+    const isRight =
+      keys.current['KeyD'] ||
+      keys.current['ArrowRight'] ||
+      touchDirection.right;
 
     if (isUp) moveZ -= 1;
     if (isDown) moveZ += 1;
@@ -149,8 +162,8 @@ export default function Jugador({
       groupRef.current.position.y = pos.current.y + Math.abs(Math.sin(walkTime)) * 0.16;
 
       if (scytheLeftRef.current && scytheRightRef.current) {
-        scytheLeftRef.current.rotation.z = Math.sin(walkTime) * 0.25;
-        scytheRightRef.current.rotation.z = -Math.sin(walkTime) * 0.25;
+        scytheLeftRef.current.rotation.z = Math.sin(walkTime) * 0.28;
+        scytheRightRef.current.rotation.z = -Math.sin(walkTime) * 0.28;
       }
 
       if (cloakRef.current) {
@@ -168,10 +181,27 @@ export default function Jugador({
       if (cloakRef.current) {
         cloakRef.current.rotation.x = THREE.MathUtils.lerp(cloakRef.current.rotation.x, 0.08, 0.1);
       }
+      if (scytheLeftRef.current && scytheRightRef.current) {
+        scytheLeftRef.current.rotation.z = THREE.MathUtils.lerp(
+          scytheLeftRef.current.rotation.z,
+          0.12,
+          0.1
+        );
+        scytheRightRef.current.rotation.z = THREE.MathUtils.lerp(
+          scytheRightRef.current.rotation.z,
+          -0.12,
+          0.1
+        );
+      }
     }
 
     if (soulAuraRef.current) {
       soulAuraRef.current.rotation.z += delta * 1.5;
+    }
+
+    if (relicHaloRef.current && hasRelic) {
+      relicHaloRef.current.rotation.y += delta * 2.0;
+      relicHaloRef.current.rotation.z += delta * 1.2;
     }
 
     groupRef.current.position.x = pos.current.x;
@@ -179,22 +209,19 @@ export default function Jugador({
 
     const relicVec = new THREE.Vector3(...relicPos);
     const distToRelic = pos.current.distanceTo(relicVec);
-    const near = distToRelic < 3.2;
+    const near = distToRelic < 4.2;
     if (onNearRelicChange) onNearRelicChange(near);
 
     if (deathCooldown.current <= 0 && obstacles.length > 0) {
+      const playerPos = new THREE.Vector3(pos.current.x, pos.current.y + 0.6, pos.current.z);
+
       for (let i = 0; i < obstacles.length; i++) {
         const obs = obstacles[i];
         if (!obs || !obs.position) continue;
 
-        const obsPos = new THREE.Vector3(
-          obs.position.x,
-          obs.position.y,
-          obs.position.z
-        );
-
-        const dist = pos.current.distanceTo(obsPos);
-        const hitRadius = obs.radius || 1.35;
+        const obsPos = new THREE.Vector3(...obs.position);
+        const dist = playerPos.distanceTo(obsPos);
+        const hitRadius = (obs.radius || 1.3) + 0.45;
 
         if (dist < hitRadius) {
           deathCooldown.current = 0.8;
@@ -217,11 +244,11 @@ export default function Jugador({
 
     const cameraTargetPos = new THREE.Vector3(
       pos.current.x,
-      pos.current.y + 11.5,
-      pos.current.z + 11.5
+      pos.current.y + 12.0,
+      pos.current.z + 10.5
     );
     state.camera.position.lerp(cameraTargetPos, 0.08);
-    state.camera.lookAt(pos.current.x, pos.current.y + 0.5, pos.current.z - 2.5);
+    state.camera.lookAt(pos.current.x, pos.current.y + 0.5, pos.current.z - 2.0);
   });
 
   return (
@@ -292,49 +319,121 @@ export default function Jugador({
         <meshStandardMaterial color="#cbd5e0" metalness={0.9} roughness={0.2} />
       </mesh>
 
-      <group ref={scytheLeftRef} position={[-0.58, 0.45, 0.1]} rotation={[0.3, 0.2, 0.2]}>
+      <group ref={scytheLeftRef} position={[-0.56, 0.35, 0.18]} rotation={[0.2, 0.12, 0.15]}>
         <mesh position={[0, 0, 0]} castShadow>
-          <cylinderGeometry args={[0.035, 0.035, 1.7, 16]} />
+          <cylinderGeometry args={[0.032, 0.038, 1.85, 16]} />
+          <meshStandardMaterial color="#1a202c" metalness={0.9} roughness={0.25} />
+        </mesh>
+        <mesh position={[0, -0.92, 0]} castShadow>
+          <cylinderGeometry args={[0.05, 0.02, 0.15, 16]} />
+          <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
+        </mesh>
+        <mesh position={[0, 0.72, 0]} castShadow>
+          <cylinderGeometry args={[0.065, 0.045, 0.22, 16]} />
+          <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
+        </mesh>
+
+        <mesh position={[0.16, 0.8, 0]} rotation={[0, 0, -0.4]} castShadow>
+          <boxGeometry args={[0.35, 0.09, 0.04]} />
           <meshStandardMaterial color="#2d3748" metalness={0.9} roughness={0.2} />
         </mesh>
-        <mesh position={[0.32, 0.7, 0]} rotation={[0, 0, -Math.PI / 3]}>
-          <boxGeometry args={[0.75, 0.1, 0.03]} />
+        <mesh position={[0.38, 0.74, 0]} rotation={[0, 0, -1.05]} castShadow>
+          <boxGeometry args={[0.48, 0.08, 0.03]} />
+          <meshStandardMaterial color="#cbd5e0" metalness={0.9} roughness={0.2} />
+        </mesh>
+        <mesh position={[0.52, 0.44, 0]} rotation={[0, 0, -2.2]} castShadow>
+          <coneGeometry args={[0.065, 0.42, 16]} />
+          <meshStandardMaterial color="#f7fafc" metalness={0.95} roughness={0.1} />
+        </mesh>
+
+        <mesh position={[0.34, 0.68, 0]} rotation={[0, 0, -1.0]}>
+          <boxGeometry args={[0.55, 0.03, 0.04]} />
           <meshStandardMaterial
             color="#00f6ff"
             emissive="#00f6ff"
-            emissiveIntensity={3.5}
+            emissiveIntensity={hasRelic ? 5.0 : 3.2}
+            roughness={0.1}
+          />
+        </mesh>
+        <mesh position={[0.48, 0.48, 0]} rotation={[0, 0, -2.1]}>
+          <boxGeometry args={[0.35, 0.025, 0.04]} />
+          <meshStandardMaterial
+            color="#00f6ff"
+            emissive="#00f6ff"
+            emissiveIntensity={hasRelic ? 5.0 : 3.2}
             roughness={0.1}
           />
         </mesh>
       </group>
 
-      <group ref={scytheRightRef} position={[0.58, 0.45, 0.1]} rotation={[0.3, -0.2, -0.2]}>
+      <group ref={scytheRightRef} position={[0.56, 0.35, 0.18]} rotation={[0.2, -0.12, -0.15]}>
         <mesh position={[0, 0, 0]} castShadow>
-          <cylinderGeometry args={[0.035, 0.035, 1.7, 16]} />
+          <cylinderGeometry args={[0.032, 0.038, 1.85, 16]} />
+          <meshStandardMaterial color="#1a202c" metalness={0.9} roughness={0.25} />
+        </mesh>
+        <mesh position={[0, -0.92, 0]} castShadow>
+          <cylinderGeometry args={[0.05, 0.02, 0.15, 16]} />
+          <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
+        </mesh>
+        <mesh position={[0, 0.72, 0]} castShadow>
+          <cylinderGeometry args={[0.065, 0.045, 0.22, 16]} />
+          <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
+        </mesh>
+
+        <mesh position={[-0.16, 0.8, 0]} rotation={[0, 0, 0.4]} castShadow>
+          <boxGeometry args={[0.35, 0.09, 0.04]} />
           <meshStandardMaterial color="#2d3748" metalness={0.9} roughness={0.2} />
         </mesh>
-        <mesh position={[-0.32, 0.7, 0]} rotation={[0, 0, Math.PI / 3]}>
-          <boxGeometry args={[0.75, 0.1, 0.03]} />
+        <mesh position={[-0.38, 0.74, 0]} rotation={[0, 0, 1.05]} castShadow>
+          <boxGeometry args={[0.48, 0.08, 0.03]} />
+          <meshStandardMaterial color="#cbd5e0" metalness={0.9} roughness={0.2} />
+        </mesh>
+        <mesh position={[-0.52, 0.44, 0]} rotation={[0, 0, 2.2]} castShadow>
+          <coneGeometry args={[0.065, 0.42, 16]} />
+          <meshStandardMaterial color="#f7fafc" metalness={0.95} roughness={0.1} />
+        </mesh>
+
+        <mesh position={[-0.34, 0.68, 0]} rotation={[0, 0, 1.0]}>
+          <boxGeometry args={[0.55, 0.03, 0.04]} />
           <meshStandardMaterial
             color="#00f6ff"
             emissive="#00f6ff"
-            emissiveIntensity={3.5}
+            emissiveIntensity={hasRelic ? 5.0 : 3.2}
+            roughness={0.1}
+          />
+        </mesh>
+        <mesh position={[-0.48, 0.48, 0]} rotation={[0, 0, 2.1]}>
+          <boxGeometry args={[0.35, 0.025, 0.04]} />
+          <meshStandardMaterial
+            color="#00f6ff"
+            emissive="#00f6ff"
+            emissiveIntensity={hasRelic ? 5.0 : 3.2}
             roughness={0.1}
           />
         </mesh>
       </group>
 
       {hasRelic && (
-        <group position={[0, 2.1, 0]}>
-          <mesh rotation={[0.4, 0.4, 0]}>
-            <octahedronGeometry args={[0.22]} />
+        <group ref={relicHaloRef} position={[0, 2.3, 0]}>
+          <mesh>
+            <octahedronGeometry args={[0.32, 0]} />
             <meshStandardMaterial
               color="#00ffff"
               emissive="#00f6ff"
-              emissiveIntensity={3.5}
-              wireframe
+              emissiveIntensity={4.0}
+              roughness={0.1}
+              metalness={0.9}
             />
           </mesh>
+          <mesh rotation={[Math.PI / 3, 0, 0]}>
+            <torusGeometry args={[0.55, 0.03, 16, 32]} />
+            <meshBasicMaterial color="#00ffff" wireframe />
+          </mesh>
+          <mesh rotation={[-Math.PI / 3, 0, 0]}>
+            <torusGeometry args={[0.48, 0.025, 16, 32]} />
+            <meshBasicMaterial color="#ffd700" wireframe />
+          </mesh>
+          <pointLight color="#00ffff" intensity={2.5} distance={6} />
         </group>
       )}
     </group>
