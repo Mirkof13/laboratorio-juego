@@ -438,6 +438,8 @@ export default function Escenario({
           <pointLight color="#d9a338" intensity={2.8} distance={9} decay={2} />
         </group>
 
+
+        
         <Text
           position={[0, 4.4, -4.0]}
           fontSize={0.75}
