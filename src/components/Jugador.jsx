@@ -21,8 +21,8 @@ export default function Jugador({
   const groupRef = useRef();
   const scytheLeftRef = useRef();
   const scytheRightRef = useRef();
-  const soulAuraRef = useRef();
-  const relicHaloRef = useRef();
+  const shadowDiscRef = useRef();
+  const relicCrownRef = useRef();
   const cloakRef = useRef();
 
   const pos = useRef(new THREE.Vector3(...startPos));
@@ -195,13 +195,8 @@ export default function Jugador({
       }
     }
 
-    if (soulAuraRef.current) {
-      soulAuraRef.current.rotation.z += delta * 1.5;
-    }
-
-    if (relicHaloRef.current && hasRelic) {
-      relicHaloRef.current.rotation.y += delta * 2.0;
-      relicHaloRef.current.rotation.z += delta * 1.2;
+    if (relicCrownRef.current && hasRelic) {
+      relicCrownRef.current.rotation.y += delta * 1.5;
     }
 
     groupRef.current.position.x = pos.current.x;
@@ -253,187 +248,138 @@ export default function Jugador({
 
   return (
     <group ref={groupRef} position={startPos}>
-      <pointLight color="#00ffff" intensity={3.2} distance={9} decay={2} />
-
-      <mesh ref={soulAuraRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.85, 0]}>
-        <ringGeometry args={[0.55, 1.3, 32]} />
+      <mesh ref={shadowDiscRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.85, 0]}>
+        <circleGeometry args={[0.75, 32]} />
         <meshBasicMaterial
-          color="#00ffff"
+          color="#121720"
           transparent
-          opacity={0.55}
-          side={THREE.DoubleSide}
+          opacity={0.5}
         />
       </mesh>
 
       <mesh position={[0, 0.15, -0.02]} castShadow>
         <capsuleGeometry args={[0.32, 0.75, 16, 24]} />
-        <meshStandardMaterial color="#1a202c" roughness={0.5} metalness={0.3} />
+        <meshStandardMaterial color="#252b36" roughness={0.7} metalness={0.2} />
       </mesh>
 
       <mesh position={[0, 0.45, 0.05]} castShadow>
         <cylinderGeometry args={[0.36, 0.38, 0.65, 24]} />
-        <meshStandardMaterial color="#4a5568" roughness={0.3} metalness={0.8} />
+        <meshStandardMaterial color="#3e4756" roughness={0.5} metalness={0.5} />
       </mesh>
 
       <group ref={cloakRef} position={[0, 0.85, -0.22]}>
         <mesh position={[0, -0.65, 0]} rotation={[0.08, 0, 0]} castShadow>
           <cylinderGeometry args={[0.38, 0.65, 1.3, 16, 1, true, 0, Math.PI]} />
-          <meshStandardMaterial color="#111622" roughness={0.8} side={THREE.DoubleSide} />
+          <meshStandardMaterial color="#1a1e27" roughness={0.9} side={THREE.DoubleSide} />
         </mesh>
       </group>
 
       <mesh position={[0, 1.05, 0.02]} castShadow>
         <sphereGeometry args={[0.34, 24, 24]} />
-        <meshStandardMaterial color="#171923" roughness={0.7} />
+        <meshStandardMaterial color="#212630" roughness={0.8} />
       </mesh>
 
       <mesh position={[0, 0.98, 0.22]} castShadow>
         <sphereGeometry args={[0.26, 24, 24]} />
-        <meshStandardMaterial color="#f7fafc" roughness={0.25} metalness={0.15} />
+        <meshStandardMaterial color="#dcd5c9" roughness={0.5} metalness={0.1} />
       </mesh>
 
       <mesh position={[-0.22, 1.25, 0.12]} rotation={[0.15, 0, -0.4]} castShadow>
         <coneGeometry args={[0.065, 0.5, 16]} />
-        <meshStandardMaterial color="#2d3748" roughness={0.35} metalness={0.4} />
+        <meshStandardMaterial color="#2b2620" roughness={0.5} metalness={0.3} />
       </mesh>
       <mesh position={[0.22, 1.25, 0.12]} rotation={[0.15, 0, 0.4]} castShadow>
         <coneGeometry args={[0.065, 0.5, 16]} />
-        <meshStandardMaterial color="#2d3748" roughness={0.35} metalness={0.4} />
+        <meshStandardMaterial color="#2b2620" roughness={0.5} metalness={0.3} />
       </mesh>
 
       <mesh position={[-0.09, 0.98, 0.36]}>
-        <sphereGeometry args={[0.055, 12, 12]} />
-        <meshBasicMaterial color="#00f6ff" />
+        <sphereGeometry args={[0.045, 12, 12]} />
+        <meshBasicMaterial color="#1a1c22" />
       </mesh>
       <mesh position={[0.09, 0.98, 0.36]}>
-        <sphereGeometry args={[0.055, 12, 12]} />
-        <meshBasicMaterial color="#00f6ff" />
+        <sphereGeometry args={[0.045, 12, 12]} />
+        <meshBasicMaterial color="#1a1c22" />
       </mesh>
 
       <mesh position={[-0.46, 0.78, 0]} rotation={[0, 0, 0.2]} castShadow>
         <sphereGeometry args={[0.22, 16, 16]} />
-        <meshStandardMaterial color="#cbd5e0" metalness={0.9} roughness={0.2} />
+        <meshStandardMaterial color="#424c5b" metalness={0.8} roughness={0.3} />
       </mesh>
       <mesh position={[0.46, 0.78, 0]} rotation={[0, 0, -0.2]} castShadow>
         <sphereGeometry args={[0.22, 16, 16]} />
-        <meshStandardMaterial color="#cbd5e0" metalness={0.9} roughness={0.2} />
+        <meshStandardMaterial color="#424c5b" metalness={0.8} roughness={0.3} />
       </mesh>
 
       <group ref={scytheLeftRef} position={[-0.56, 0.35, 0.18]} rotation={[0.2, 0.12, 0.15]}>
         <mesh position={[0, 0, 0]} castShadow>
           <cylinderGeometry args={[0.032, 0.038, 1.85, 16]} />
-          <meshStandardMaterial color="#1a202c" metalness={0.9} roughness={0.25} />
+          <meshStandardMaterial color="#26221c" metalness={0.4} roughness={0.8} />
         </mesh>
         <mesh position={[0, -0.92, 0]} castShadow>
           <cylinderGeometry args={[0.05, 0.02, 0.15, 16]} />
-          <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
+          <meshStandardMaterial color="#504538" metalness={0.85} roughness={0.3} />
         </mesh>
         <mesh position={[0, 0.72, 0]} castShadow>
           <cylinderGeometry args={[0.065, 0.045, 0.22, 16]} />
-          <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
+          <meshStandardMaterial color="#504538" metalness={0.85} roughness={0.3} />
         </mesh>
 
         <mesh position={[0.16, 0.8, 0]} rotation={[0, 0, -0.4]} castShadow>
           <boxGeometry args={[0.35, 0.09, 0.04]} />
-          <meshStandardMaterial color="#2d3748" metalness={0.9} roughness={0.2} />
+          <meshStandardMaterial color="#323842" metalness={0.9} roughness={0.25} />
         </mesh>
         <mesh position={[0.38, 0.74, 0]} rotation={[0, 0, -1.05]} castShadow>
           <boxGeometry args={[0.48, 0.08, 0.03]} />
-          <meshStandardMaterial color="#cbd5e0" metalness={0.9} roughness={0.2} />
+          <meshStandardMaterial color="#5e6878" metalness={0.9} roughness={0.2} />
         </mesh>
         <mesh position={[0.52, 0.44, 0]} rotation={[0, 0, -2.2]} castShadow>
           <coneGeometry args={[0.065, 0.42, 16]} />
-          <meshStandardMaterial color="#f7fafc" metalness={0.95} roughness={0.1} />
-        </mesh>
-
-        <mesh position={[0.34, 0.68, 0]} rotation={[0, 0, -1.0]}>
-          <boxGeometry args={[0.55, 0.03, 0.04]} />
-          <meshStandardMaterial
-            color="#00f6ff"
-            emissive="#00f6ff"
-            emissiveIntensity={hasRelic ? 5.0 : 3.2}
-            roughness={0.1}
-          />
-        </mesh>
-        <mesh position={[0.48, 0.48, 0]} rotation={[0, 0, -2.1]}>
-          <boxGeometry args={[0.35, 0.025, 0.04]} />
-          <meshStandardMaterial
-            color="#00f6ff"
-            emissive="#00f6ff"
-            emissiveIntensity={hasRelic ? 5.0 : 3.2}
-            roughness={0.1}
-          />
+          <meshStandardMaterial color="#707c90" metalness={0.95} roughness={0.15} />
         </mesh>
       </group>
 
       <group ref={scytheRightRef} position={[0.56, 0.35, 0.18]} rotation={[0.2, -0.12, -0.15]}>
         <mesh position={[0, 0, 0]} castShadow>
           <cylinderGeometry args={[0.032, 0.038, 1.85, 16]} />
-          <meshStandardMaterial color="#1a202c" metalness={0.9} roughness={0.25} />
+          <meshStandardMaterial color="#26221c" metalness={0.4} roughness={0.8} />
         </mesh>
         <mesh position={[0, -0.92, 0]} castShadow>
           <cylinderGeometry args={[0.05, 0.02, 0.15, 16]} />
-          <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
+          <meshStandardMaterial color="#504538" metalness={0.85} roughness={0.3} />
         </mesh>
         <mesh position={[0, 0.72, 0]} castShadow>
           <cylinderGeometry args={[0.065, 0.045, 0.22, 16]} />
-          <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
+          <meshStandardMaterial color="#504538" metalness={0.85} roughness={0.3} />
         </mesh>
 
         <mesh position={[-0.16, 0.8, 0]} rotation={[0, 0, 0.4]} castShadow>
           <boxGeometry args={[0.35, 0.09, 0.04]} />
-          <meshStandardMaterial color="#2d3748" metalness={0.9} roughness={0.2} />
+          <meshStandardMaterial color="#323842" metalness={0.9} roughness={0.25} />
         </mesh>
         <mesh position={[-0.38, 0.74, 0]} rotation={[0, 0, 1.05]} castShadow>
           <boxGeometry args={[0.48, 0.08, 0.03]} />
-          <meshStandardMaterial color="#cbd5e0" metalness={0.9} roughness={0.2} />
+          <meshStandardMaterial color="#5e6878" metalness={0.9} roughness={0.2} />
         </mesh>
         <mesh position={[-0.52, 0.44, 0]} rotation={[0, 0, 2.2]} castShadow>
           <coneGeometry args={[0.065, 0.42, 16]} />
-          <meshStandardMaterial color="#f7fafc" metalness={0.95} roughness={0.1} />
-        </mesh>
-
-        <mesh position={[-0.34, 0.68, 0]} rotation={[0, 0, 1.0]}>
-          <boxGeometry args={[0.55, 0.03, 0.04]} />
-          <meshStandardMaterial
-            color="#00f6ff"
-            emissive="#00f6ff"
-            emissiveIntensity={hasRelic ? 5.0 : 3.2}
-            roughness={0.1}
-          />
-        </mesh>
-        <mesh position={[-0.48, 0.48, 0]} rotation={[0, 0, 2.1]}>
-          <boxGeometry args={[0.35, 0.025, 0.04]} />
-          <meshStandardMaterial
-            color="#00f6ff"
-            emissive="#00f6ff"
-            emissiveIntensity={hasRelic ? 5.0 : 3.2}
-            roughness={0.1}
-          />
+          <meshStandardMaterial color="#707c90" metalness={0.95} roughness={0.15} />
         </mesh>
       </group>
 
       {hasRelic && (
-        <group ref={relicHaloRef} position={[0, 2.3, 0]}>
+        <group ref={relicCrownRef} position={[0, 2.15, 0]}>
           <mesh>
-            <octahedronGeometry args={[0.32, 0]} />
+            <octahedronGeometry args={[0.28, 0]} />
             <meshStandardMaterial
-              color="#00ffff"
-              emissive="#00f6ff"
-              emissiveIntensity={4.0}
-              roughness={0.1}
-              metalness={0.9}
+              color="#e5a93b"
+              emissive="#946317"
+              emissiveIntensity={1.2}
+              roughness={0.3}
+              metalness={0.7}
             />
           </mesh>
-          <mesh rotation={[Math.PI / 3, 0, 0]}>
-            <torusGeometry args={[0.55, 0.03, 16, 32]} />
-            <meshBasicMaterial color="#00ffff" wireframe />
-          </mesh>
-          <mesh rotation={[-Math.PI / 3, 0, 0]}>
-            <torusGeometry args={[0.48, 0.025, 16, 32]} />
-            <meshBasicMaterial color="#ffd700" wireframe />
-          </mesh>
-          <pointLight color="#00ffff" intensity={2.5} distance={6} />
+          <pointLight color="#e5a93b" intensity={1.5} distance={4} />
         </group>
       )}
     </group>

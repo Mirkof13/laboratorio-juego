@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { Stars } from '@react-three/drei';
 import Jugador from './components/Jugador';
 import Obstaculo from './components/Obstaculo';
 import Escenario from './components/Escenario';
@@ -119,16 +118,7 @@ export default function App() {
         shadows
         gl={{ antialias: true }}
       >
-        <color attach="background" args={['#080b16']} />
-        <Stars
-          radius={85}
-          depth={50}
-          count={1200}
-          factor={4}
-          saturation={0}
-          fade
-          speed={0.5}
-        />
+        <color attach="background" args={['#202732']} />
 
         <Escenario
           hasRelic={hasRelic}
