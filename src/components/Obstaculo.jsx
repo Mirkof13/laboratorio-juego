@@ -2,14 +2,14 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 
 export default function Obstaculo({
-  id = 1,
-  type = 'scytheTrap',
-  initialPos = [0, 1.2, 0],
+  id,
+  type = 'blade',
+  initialPos = [0, 1, 0],
   axis = 'x',
-  range = 3.5,
-  speed = 2.2,
+  range = 2,
+  speed = 2,
   offset = 0,
-  radius = 1.35,
+  radius = 1.3,
   onPositionUpdate,
 }) {
   const groupRef = useRef();
@@ -26,7 +26,11 @@ export default function Obstaculo({
     let curY = initialPos[1];
     let curZ = initialPos[2];
 
-    if (axis === 'x') {
+    if (axis === 'circle') {
+      curX = initialPos[0] + Math.cos(time) * range;
+      curZ = initialPos[2] + Math.sin(time) * range;
+      curY = initialPos[1] + Math.sin(time * 2) * 0.18;
+    } else if (axis === 'x') {
       curX = initialPos[0] + oscillation;
     } else if (axis === 'y') {
       curY = initialPos[1] + Math.abs(Math.sin(time)) * range;
@@ -46,43 +50,46 @@ export default function Obstaculo({
     }
 
     if (flameRef.current) {
-      const scale = 1 + Math.sin(time * 3) * 0.15;
+      const scale = 1 + Math.sin(time * 3) * 0.12;
       flameRef.current.scale.set(scale, scale, scale);
+      flameRef.current.rotation.y += 0.03;
     }
 
     if (onPositionUpdate) {
-      onPositionUpdate(id, { x: curX, y: curY, z: curZ }, radius);
+      onPositionUpdate(id, [curX, curY, curZ], radius);
     }
   });
 
   return (
     <group ref={groupRef} position={initialPos}>
       <pointLight
-        color={type === 'skullPatrol' ? '#ff3366' : '#9900ff'}
-        intensity={2.2}
-        distance={5}
+        color={type === 'skullPatrol' ? '#ff0055' : '#9900ff'}
+        intensity={2.6}
+        distance={6}
         decay={2}
       />
 
       {type === 'scytheTrap' && (
         <group ref={rotorRef}>
           <mesh castShadow>
-            <sphereGeometry args={[0.42, 24, 24]} />
-            <meshStandardMaterial color="#1a1520" metalness={0.9} roughness={0.2} />
+            <cylinderGeometry args={[0.08, 0.08, 3.8, 16]} />
+            <meshStandardMaterial color="#1a202c" metalness={0.9} roughness={0.2} />
           </mesh>
-
-          <mesh ref={flameRef}>
-            <sphereGeometry args={[0.26, 16, 16]} />
-            <meshBasicMaterial color="#ff0055" />
+          <mesh position={[0, 0, 0]} castShadow>
+            <sphereGeometry args={[0.32, 16, 16]} />
+            <meshStandardMaterial color="#cbd5e0" metalness={0.95} roughness={0.15} />
           </mesh>
-
-          {[0, 1, 2, 3].map((i) => {
-            const angle = (i * Math.PI) / 2;
+          {[0, 1, 2, 3].map((idx) => {
+            const angle = (idx * Math.PI) / 2;
             return (
-              <group key={i} rotation={[0, 0, angle]}>
+              <group key={idx} rotation={[0, 0, angle]}>
                 <mesh position={[0.7, 0, 0]} castShadow>
-                  <cylinderGeometry args={[0.04, 0.04, 1.2, 12]} rotation={[0, 0, Math.PI / 2]} />
-                  <meshStandardMaterial color="#404048" metalness={0.8} roughness={0.3} />
+                  <boxGeometry args={[1.4, 0.08, 0.04]} />
+                  <meshStandardMaterial
+                    color="#2d3748"
+                    metalness={0.85}
+                    roughness={0.25}
+                  />
                 </mesh>
                 <mesh position={[1.35, 0.2, 0]} rotation={[0, 0, Math.PI / 4]}>
                   <boxGeometry args={[0.65, 0.12, 0.03]} />
@@ -100,36 +107,77 @@ export default function Obstaculo({
 
       {type === 'skullPatrol' && (
         <group ref={flameRef}>
-          <mesh position={[0, 0, 0]} castShadow>
-            <sphereGeometry args={[0.55, 24, 24]} />
-            <meshStandardMaterial color="#e2d9cc" roughness={0.5} />
+          <mesh position={[0, 0.08, 0]} castShadow>
+            <sphereGeometry args={[0.5, 24, 24]} />
+            <meshStandardMaterial color="#ded6c8" roughness={0.4} metalness={0.2} />
           </mesh>
-          <mesh position={[0, -0.32, 0.18]} castShadow>
-            <cylinderGeometry args={[0.26, 0.2, 0.4, 16]} />
-            <meshStandardMaterial color="#c8bfb0" roughness={0.6} />
+
+          <mesh position={[0, 0.12, 0.3]} castShadow>
+            <boxGeometry args={[0.62, 0.12, 0.25]} />
+            <meshStandardMaterial color="#cdc5b6" roughness={0.45} />
           </mesh>
-          <mesh position={[-0.38, 0.42, -0.05]} rotation={[0.3, 0, -0.55]} castShadow>
-            <coneGeometry args={[0.1, 0.65, 16]} />
-            <meshStandardMaterial color="#1a151e" roughness={0.4} />
+
+          <mesh position={[0, -0.18, 0.26]} castShadow>
+            <boxGeometry args={[0.38, 0.22, 0.28]} />
+            <meshStandardMaterial color="#c0b8a8" roughness={0.5} />
           </mesh>
-          <mesh position={[0.38, 0.42, -0.05]} rotation={[0.3, 0, 0.55]} castShadow>
-            <coneGeometry args={[0.1, 0.65, 16]} />
-            <meshStandardMaterial color="#1a151e" roughness={0.4} />
+
+          <mesh position={[0, -0.3, 0.28]}>
+            <boxGeometry args={[0.3, 0.08, 0.08]} />
+            <meshStandardMaterial color="#ffffff" roughness={0.2} />
           </mesh>
-          <mesh position={[-0.18, 0.06, 0.48]}>
-            <sphereGeometry args={[0.1, 12, 12]} />
-            <meshBasicMaterial color="#bc13fe" />
+
+          <mesh position={[-0.17, 0.08, 0.44]}>
+            <sphereGeometry args={[0.11, 16, 16]} />
+            <meshBasicMaterial color="#110515" />
           </mesh>
-          <mesh position={[0.18, 0.06, 0.48]}>
-            <sphereGeometry args={[0.1, 12, 12]} />
-            <meshBasicMaterial color="#bc13fe" />
+          <mesh position={[0.17, 0.08, 0.44]}>
+            <sphereGeometry args={[0.11, 16, 16]} />
+            <meshBasicMaterial color="#110515" />
           </mesh>
+
+          <mesh position={[-0.17, 0.08, 0.49]}>
+            <sphereGeometry args={[0.055, 12, 12]} />
+            <meshBasicMaterial color="#ff0055" />
+          </mesh>
+          <mesh position={[0.17, 0.08, 0.49]}>
+            <sphereGeometry args={[0.055, 12, 12]} />
+            <meshBasicMaterial color="#ff0055" />
+          </mesh>
+
+          <mesh position={[-0.38, 0.45, -0.05]} rotation={[0.2, 0, -0.55]} castShadow>
+            <coneGeometry args={[0.09, 0.7, 16]} />
+            <meshStandardMaterial color="#1f1824" roughness={0.3} metalness={0.5} />
+          </mesh>
+          <mesh position={[0.38, 0.45, -0.05]} rotation={[0.2, 0, 0.55]} castShadow>
+            <coneGeometry args={[0.09, 0.7, 16]} />
+            <meshStandardMaterial color="#1f1824" roughness={0.3} metalness={0.5} />
+          </mesh>
+
+          <mesh position={[-0.42, 0.15, 0.05]} rotation={[0.1, 0, -1.1]} castShadow>
+            <coneGeometry args={[0.055, 0.35, 12]} />
+            <meshStandardMaterial color="#1f1824" roughness={0.3} metalness={0.5} />
+          </mesh>
+          <mesh position={[0.42, 0.15, 0.05]} rotation={[0.1, 0, 1.1]} castShadow>
+            <coneGeometry args={[0.055, 0.35, 12]} />
+            <meshStandardMaterial color="#1f1824" roughness={0.3} metalness={0.5} />
+          </mesh>
+
           <mesh rotation={[Math.PI / 4, 0, 0]}>
-            <torusGeometry args={[0.85, 0.05, 16, 32]} />
+            <torusGeometry args={[0.92, 0.045, 16, 32]} />
             <meshStandardMaterial
-              color="#bc13fe"
-              emissive="#8a05c7"
-              emissiveIntensity={2}
+              color="#ff0066"
+              emissive="#ff0055"
+              emissiveIntensity={3.2}
+              wireframe
+            />
+          </mesh>
+          <mesh rotation={[-Math.PI / 3, 0, 0]}>
+            <torusGeometry args={[0.82, 0.035, 16, 32]} />
+            <meshStandardMaterial
+              color="#9900ff"
+              emissive="#9900ff"
+              emissiveIntensity={2.5}
               wireframe
             />
           </mesh>
@@ -174,17 +222,31 @@ export default function Obstaculo({
             <meshStandardMaterial
               color="#00ffff"
               emissive="#00bfff"
-              emissiveIntensity={2}
+              emissiveIntensity={2.2}
             />
           </mesh>
-          <mesh rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.05, 0.05, 2.4, 16]} />
-            <meshStandardMaterial
-              color="#00f6ff"
-              emissive="#00c8e0"
-              emissiveIntensity={2.5}
-            />
-          </mesh>
+          {[0, 1, 2, 3].map((idx) => {
+            const angle = (idx * Math.PI) / 2;
+            return (
+              <mesh
+                key={idx}
+                position={[
+                  Math.cos(angle) * 1.0,
+                  0,
+                  Math.sin(angle) * 1.0,
+                ]}
+                rotation={[0, -angle, 0]}
+                castShadow
+              >
+                <coneGeometry args={[0.15, 0.65, 12]} />
+                <meshStandardMaterial
+                  color="#00f6ff"
+                  emissive="#00f6ff"
+                  emissiveIntensity={2.5}
+                />
+              </mesh>
+            );
+          })}
         </group>
       )}
     </group>

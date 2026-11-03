@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Stars } from '@react-three/drei';
 import Jugador from './components/Jugador';
@@ -6,8 +6,8 @@ import Obstaculo from './components/Obstaculo';
 import Escenario from './components/Escenario';
 import Marcador from './components/Marcador';
 import TouchControls from './components/TouchControls';
-import { sound } from './utils/audio';
 import { MAP_CONFIG } from './utils/mapData';
+import { sound } from './utils/audio';
 import './App.css';
 
 export default function App() {
@@ -150,10 +150,10 @@ export default function App() {
         <Obstaculo
           id={2}
           type="pendulum"
-          initialPos={[15.2, 1.2, 6]}
-          axis="z"
-          range={4.2}
-          speed={1.8}
+          initialPos={[9.0, 1.4, 17.5]}
+          axis="y"
+          range={1.2}
+          speed={2.8}
           offset={1.2}
           radius={1.4}
           onPositionUpdate={handleObstaclePositionUpdate}
@@ -162,21 +162,21 @@ export default function App() {
         <Obstaculo
           id={3}
           type="skullPatrol"
-          initialPos={[-9.5, 1.6, -0.5]}
-          axis="x"
-          range={1.9}
-          speed={2.2}
-          offset={2.0}
-          radius={1.35}
+          initialPos={[-4.8, 1.45, -0.5]}
+          axis="circle"
+          range={1.45}
+          speed={1.85}
+          offset={0}
+          radius={1.3}
           onPositionUpdate={handleObstaclePositionUpdate}
         />
 
         <Obstaculo
           id={4}
           type="scytheTrap"
-          initialPos={[-3.8, 1.2, -16]}
+          initialPos={[-3.8, 1.2, -14]}
           axis="x"
-          range={2.1}
+          range={2.2}
           speed={2.9}
           offset={3.0}
           radius={1.35}
